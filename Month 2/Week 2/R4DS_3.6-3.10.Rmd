@@ -1,0 +1,311 @@
+---
+title: "R4DS_3.6-3.10"
+author: "Breakout Leaders"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## 3.6 Geometric Objects
+This is a quick refersher on the structure of our data before we start looking at plots:
+```{r}
+head(mpg)
+```
+
+
+How are these two plots similar? 
+
+```{r echo = FALSE, out.width = "50%", fig.align="default", message = FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+Both plots contain the same x variable, the same y variable, and both describe the same data. But the plots are not identical. Each plot uses a different visual object to represent the data. In ggplot2 syntax, we say that they use different __geoms__.
+
+A __geom__ is the geometrical object that a plot uses to represent data. For example `geom_line()` creates a line graph, `geom_point()` creates a scatter plot, `geom_smooth()` creates a trend line, `geom_bar()` and `geom_col()` create different types of bar graphs, and `geom_histogram()` creates a histogram. We can keep the structure of the data between two plots exactly the same and interchange different __geom__ objects to visualize the information differently. 
+
+The plots above can be created with the following lines of code.
+
+```{r eval = FALSE}
+# left
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# right
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+Keeping in mind how aesthetics initialized in the ggplot object will pass as default aesthetics to the following __geom__ objects, we can very simply layer multiple geoms.
+
+```{r, message=FALSE}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+_Small tangent:_  
+Be careful layering too many geoms because it can distract or take away from the point you are trying to convey to your audience. Simpler and fewer dimensions is almost always better with plots because your message becomes even more obvious. Instead of trying to make 3 points in 1 plot, try making 3 plots each convying 1 of those points. 
+
+Every geom function in ggplot2 takes a `mapping` argument. However, not every aesthetic works with every geom. You could set the shape of a point, but you couldn't set the "shape" of a line. On the other hand, you _could_ set the linetype of a line. `geom_smooth()` will draw a different line, with a different linetype, for each unique value of the variable that you map to linetype (can also be set with the `grouping` aesthetic). Make sure to make use of the `?geom_....()` to look at the docs that explain which aesthetics can be used with which __geom__ objects.
+
+```{r message = FALSE}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+  geom_smooth(mapping = aes(linetype = drv, color = drv, fill = drv)) + 
+  geom_point(mapping = aes(color = drv)) # Fill or linetype won't do anything here but you could set a shape aesthetic for geom_point()
+```
+
+You can also specify different `data` for each layer. Here, our smooth line displays just a subset of the `mpg` dataset, the subcompact cars. The local data argument in `geom_smooth()` overrides the global data argument in `ggplot()` for that layer only.
+
+```{r, message = FALSE}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
+```
+
+### Practice Exercises
+
+1.  Will these two graphs look different? Why/why not?
+
+    ```{r, eval = FALSE}
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point() + 
+      geom_smooth()
+    
+    ggplot() + 
+      geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+    ```
+
+1.  Recreate the R code necessary to generate the following graphs.
+    
+    ```{r echo = FALSE, fig.width = 4,  fig.height = 4, message = FALSE}
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point() + 
+      geom_smooth(se = FALSE)
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_smooth(aes(group = drv), se = FALSE) +
+      geom_point()
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+      geom_point() + 
+      geom_smooth(se = FALSE)
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point(aes(color = drv)) + 
+      geom_smooth(se = FALSE)
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point(aes(color = drv)) +
+      geom_smooth(aes(linetype = drv), se = FALSE)
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point(size = 4, colour = "white") + 
+      geom_point(aes(colour = drv))
+    ```
+
+Scroll down for answer key  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
+
+
+---- 
+Answers:
+```{r, eval = FALSE, echo = TRUE}
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point() + 
+      geom_smooth(se = FALSE)
+
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_smooth(aes(group = drv), se = FALSE) +
+      geom_point()
+    
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+      geom_point() + 
+      geom_smooth(se = FALSE)
+    
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point(aes(color = drv)) + 
+      geom_smooth(se = FALSE)
+    
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point(aes(color = drv)) +
+      geom_smooth(aes(linetype = drv), se = FALSE)
+    
+    ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+      geom_point(size = 4, colour = "white") + 
+      geom_point(aes(colour = drv))
+```
+
+---- 
+## 3.7 Statistical transformations  
+
+Some geoms like `geom_bar()` use statistical transformations in order to create their graph. Usually you do not need to mess with these statistical transformations since every geom has a default stat and every stat has a default geom.
+
+
+On the x-axis, the chart displays `cut`, a variable from `diamonds`. On the y-axis, it displays count, but count is not a variable in `diamonds`! Where does count come from? Many graphs, like scatterplots, plot the raw values of your dataset. Other graphs, like bar charts, calculate new values to plot:
+
+* bar charts, histograms, and frequency polygons bin your data 
+  and then plot bin counts, the number of points that fall in each bin.
+
+* smoothers fit a model to your data and then plot predictions from the
+  model.
+
+* boxplots compute a robust summary of the distribution and then display a 
+  specially formatted box.
+
+The algorithm used to calculate new values for a graph is called a __stat__, short for statistical transformation. The figure below describes how this process works with `geom_bar()`.
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("images/visualization-stat-bar.png")
+```
+
+There are only a few cases where it makes sense to change the stat in a geom. The most common case is when you may already have the _summary transformation_ complete and you still want a bar plot.
+
+```{r}
+demo <- tribble(
+  ~cut,         ~freq,
+  "Fair",       1610,
+  "Good",       4906,
+  "Very Good",  12082,
+  "Premium",    13791,
+  "Ideal",      21551
+)
+
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = cut, y = freq), stat = "identity")
+```
+
+Alternatively, you could use `geom_col()` which has a different default stat.
+```{r}
+ggplot(data = demo) +
+  geom_col(mapping = aes(x = cut, y = freq))
+```
+
+---- 
+## 3.8 Position adjustments
+
+There's one more piece of magic associated with bar charts. You can colour a bar chart using either the `colour` aesthetic, or, more usefully, `fill`:
+
+```{r out.width = "50%", fig.align = "default", eval=FALSE}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+```
+
+```{r out.width = "50%", fig.align = "default", echo =FALSE}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+```
+
+
+Note what happens if you map the fill aesthetic to another variable, like `clarity`: the bars are automatically stacked. Each colored rectangle represents a combination of `cut` and `clarity`.
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+```
+
+The stacking is performed automatically by the __position adjustment__ specified by the `position` argument. If you don't want a stacked bar chart, you can use one of three other options: `"identity"`, `"dodge"` or `"fill"`.
+
+One of the more common types of position adjustments you can make is __dodge__.
+*   `position = "dodge"` places overlapping objects directly _beside_ one 
+    another. This makes it easier to compare individual values.
+
+```{r}
+    ggplot(data = diamonds) + 
+      geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+```
+    
+
+__Position__ can also be used with scatter plots in places where there is overplotting to help emphasis density in a certain area where there is __overplotting__.
+
+```{r out.width = "50%", fig.align = "default", eval = FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+```
+```{r out.width = "50%", fig.align = "default", echo=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+```
+
+## Exercise  
+
+1. How might you improve this plot?
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+```
+
+---- 
+## 3.9 Coordinate systems
+
+ggplot defaults to an x,y cartesian coordinate system, but you can also use `coord_polar()` and `coord_quickmap()` for latitude/longitude points.
+
+If you have a plot, you can easy flip the coordinates of that plot with `coord_flip()`
+
+```{r out.width = "50%", fig.align = "default", eval = FALSE}
+bar <- ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut), show.legend = FALSE) 
+  
+
+bar    
+bar + coord_flip()
+```
+```{r out.width = "50%", fig.align = "default", echo = FALSE}
+bar <- ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut), show.legend = FALSE) 
+  
+
+bar    
+bar + coord_flip()
+```
+
+---- 
+## 3.10 The layered grammar of graphics
+Using all the functions you have learned in this chapter, we can use this template to layer each piece together:
+
+```
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(
+     mapping = aes(<MAPPINGS>),
+     stat = <STAT>, 
+     position = <POSITION>
+  ) +
+  <COORDINATE_FUNCTION> +
+  <FACET_FUNCTION>
+```
+
+Not every plot needs all of these to be a good plot. 
+

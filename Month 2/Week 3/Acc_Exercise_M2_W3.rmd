@@ -16,7 +16,7 @@ Material taken from r4ds ch. 7
 
 "There is no rule about which questions you should ask to guide your research" - Hadley  
 
-EDA is a uniue part of data science in the sense that there's no exact science or process to EDA, sometimes you try something and it works, sometimes it's a dead end. Nothing is 'right' or 'wrong', just exploratory. Try to remember this as you go through the exercises and work on any EDA project if it gets tedious or frustrating. Even if you try X and hit a dead end, you at least now know that X doesn't apply to this dataset, so you can still take something away from it. 
+EDA is a unique part of data science in the sense that there's no exact science or process to EDA, sometimes you try something and it works, sometimes it's a dead end. Nothing is 'right' or 'wrong', just exploratory. Try to remember this as you go through the exercises and work on any EDA project if it gets tedious or frustrating. Even if you try X and hit a dead end, you at least now know that X doesn't apply to this dataset, so you can still take something away from it. 
 
 ##### Useful definitions from r4ds:
 
